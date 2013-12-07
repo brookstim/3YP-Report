@@ -3,7 +3,7 @@
 %Bibliography
 %\usepackage[backend=biber,citestyle=numeric]{biblatex}
 %\addbibresource{interim.bib}
- 
+ \usepackage{longtable}
 %Customise layout of Contents page
 \usepackage{tocloft}
 %Hyperlinks in contents
@@ -130,7 +130,23 @@ The Labelled Faces in the Wild Dataset is a database of images collected for the
 
 The way that this dataset works is by using the pre-defined views (sets of images, some positively matching and others negatively matching). The first is for algorithm development, and the second is for performance reporting. Using these two different views helps ensure that the algorithm will not be skewed for the final results.
 
-               
+\section{Report on Technical Progress}
+\subsection{Planning - Analysis and Design}
+\subsubsection{Requirements}
+A requirements specification has been created for an implementation of an algorithm, using research discussed in section 2.
+
+\begin{longtable} {| p{1.7cm} | p{3cm} | p{6cm} | p{1.7cm} | p{2cm} |}  
+\multicolumn{5}{c}
+{\tablename\ \thetable\ -- \textit{Continued from previous page}} \\
+
+    \hline
+    \textbf{Risk ID} & \textbf{Risk} & \textbf{Outcome(s)} & \textbf{Impact} & \textbf{Risk Factor} \\ \hline \hline
+1 & Hardware failure on the main development machine & System would need rebuilding or hardware would need replacing. Would cause significant delays & 5 & High \\ \hline
+2 & Authors personal issues (e.g. illness) & Could cause long term delays to the project development & 3 & Medium \\ \hline
+3 & Misjudging time needed for the project & The whole project wouldn't be completed to it's full potential, this would affect the final outcomes as set out in the requirements & 2 & Low \\ \hline
+4 & Dataset no longer available & This would cause a number of issues and slight delays due to the evaluation method being based around the Labelled Faces in the Wild dataset. & 3 & Medium \\ \hline 
+    \end{longtable}
+
 %%%%%%%%%%%%%%%%%%%%%%%%%
 %       APPENDICES      %
 %%%%%%%%%%%%%%%%%%%%%%%%%
