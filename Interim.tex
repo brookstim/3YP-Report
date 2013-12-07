@@ -121,8 +121,7 @@ Fisher Vectors describe a set of local features in a single vector. Fisher Vecto
 \subsection*{Large-Margin Dimensionality Reduction}
 \addcontentsline{toc}{subsection}{Large Dimensionality Reduction}
 
-Large-Margin Dimensionality Reduction is the step in which the Fisher Vectors are compressed to small discriminative representation. This will ensure that the face descriptors have a low dimensionality, making the algorithm suitable for large-scale datasets. By taking t
-
+Large-Margin Dimensionality Reduction is the step in which the Fisher Vectors are compressed to small discriminative representation. This stage is where the calculation is made that determines if the two given faces are the same or not. In \cite{highlbpsift} it details the method, explaining how a high dimensional fisher vector can be projected to a low dimensional vector, in order for the squared euclidian distance can be calculated. If the squared euclidian distance between the two images are smaller than a threshold, then they are the same person in the image.
         
   \subsection*{Labelled Faces in the Wild Dataset}
 \addcontentsline{toc}{subsection}{Labelled Faces in the Wild Dataset}
