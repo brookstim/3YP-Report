@@ -1,0 +1,260 @@
+\documentclass[12pt, a4paper]{article}
+ 
+%Bibliography
+%\usepackage[backend=biber,citestyle=numeric]{biblatex}
+%\addbibresource{interim.bib}
+ 
+%Customise layout of Contents page
+\usepackage{tocloft}
+%Hyperlinks in contents
+\usepackage[hidelinks]{hyperref}
+%Dotted lines in table of contents
+\renewcommand{\cftsecleader}{\cftdotfill{\cftdotsep}}
+ 
+%Appendices
+\usepackage[toc,page]{appendix}
+ 
+\begin{document}
+ 
+ 
+ 
+%%%%%%%%%%%%%%%%%%%%%%%%%
+%       TITLE PAGE      %
+%%%%%%%%%%%%%%%%%%%%%%%%%
+ 
+        %Set alphabetic page numbering just for title page.
+        \pagenumbering{alph}
+       
+        \begin{titlepage}
+                       
+                \center
+               
+                {\large Electronics \& Computer Science}\\
+                {\large Faculty of Physical and Applied Sciences}\\
+                {\large University of Southampton}\\[2.5cm]
+               
+                {\Large Tim Brooks}\\[0.5cm]
+                {\Large \today}\\[2.5cm]
+               
+                {\LARGE Faces in the Wild}\\[3.0cm]
+               
+                {\large First Examiner: Dr Paul Lewis}\\[0.5cm]
+                {\large Second Examiner: Dr Mark Nixon}\\[3.2cm]
+               
+                {\large A Project Progress Report\\ Submitted For The Award Of:}\\[0.2cm]
+                {\Large MEng Computer Science}
+               
+                \vfill
+       
+        \end{titlepage}
+       
+        %Set page numbering back to numerical for rest.
+        \pagenumbering{arabic}
+       
+       
+       
+%%%%%%%%%%%%%%%%%%%%%%%%%
+%        ABSTRACT       %
+%%%%%%%%%%%%%%%%%%%%%%%%%
+ 
+        \begin{abstract}
+               
+        \end{abstract}
+       
+        \newpage
+       
+ 
+%%%%%%%%%%%%%%
+%  CONTENTS  %
+%%%%%%%%%%%%%%
+ 
+        %Display 'Page' header above the page numbers column.
+        \addtocontents{toc}{~\hfill\textbf{Page}\par}
+       
+        %Make tabel of contents (Needs two typesetting runs to populate)
+        \tableofcontents
+       
+ 
+%%%%%%%%%%%%%%%%%%%%%%%%%
+%      MAIN CONTENT     %
+%%%%%%%%%%%%%%%%%%%%%%%%%
+ 
+        \newpage
+ \section*{Project Goals}
+\addcontentsline{toc}{section}{Project Goals}
+The aim for this project is to investigate and implement the method of Face Recognition used in the paper Fisher Vector Faces in the Wild (Simonyan et al) in OpenIMAJ. This method is a pipeline of many state of the art features in Face Recognition, some already used in OpenIMAJ, this project will investigate those and use them in the final implementation. When the method has been implemented into OpenIMAJ, the project will explore the performance of the method against the expected results in the paper [reference], and the results against other methods, including the state of the art High Dimensionality Local Binary Patterns (High-LBP) [reference] and others, time permitting. An aim of the project is to design it such that it is similar to the design ideology of OpenIMAJ, having very high cohesion between objects.
+
+\newpage
+\section*{Background and report of literature search}
+\addcontentsline{toc}{section}{Background and report of literature search}
+The paper Fisher Vector faces in the Wild \cite{simonyan2004fisher} shows that when Fisher vectors are used alongside densely sampled SIFT features, the resulting face recognition system is capable of achieving state-of-the-art face verification performance on the Labelled Faces in the Wild \cite{labelledFaces} benchmark. The paper proceeds to discover how a compact descriptor can be learnt from the fisher vectors using discriminative metric learning, since fisher vectors are highly dimensional. The conclusion of this paper is supported by a set of tables and graphs, detailing the results of tests on the Labelled faces in the wild dataset. It shows that when outside training data is used (unrestricted setting), the pipeline has the second highest mean at 0.9303 with a slightly smaller error margin. This is second to High-Dimensionality LBP at 0.9318 accuracy. In a Restricted setting, where there is no outside training data, the method yielded the highest accuracy of 0.8747, meaning it is the new state-of-the-art in that particular setting. The paper describes the steps it took in order to achieve it’s results, which uses many advanced facial recognition methods. In this literature review, the methods used will be examined, along with work related to Face Recognition.
+
+In \cite{simonyan2004fisher}, there is a description of the processing pipeline used to achieve the high standard of facial recognition. This consists of the following parts:
+\begin{itemize}
+\item Facial landmark detection
+\item Align and crop face
+\item Dense Scale Invariant Feature Transformation, Gaussian Mixture Modelling and Fisher Vector Encoding
+\item Discriminative Dimensionality Reduction
+\item Compact Face Representation
+
+\end{itemize}
+\subsection*{OpenIMAJ}
+\addcontentsline{toc}{subsection}{OpenIMAJ}
+OpenIMAJ is an Open Intelligent Multimedia Analysis toolkit for Java \cite{openimaj}. It consists of a set of libraries and tools used for multimedia content analysis and content generation. OpenIMAJ already utilises several components needed for the Fisher Vector face recognition implementation. It contains the necessary code for Facial Landmark Detection, Align and Crop,  Dense SIFT, Principal Component Analysis. 
+For Facial Landmark Detection, there is a class in OpenIMAJ that can be used, the FKEFaceDetector (Front Keypoint Enriched Face Detector). There is also the AffineAligner that can be used in order to perform the Align and Crop face. 
+
+\subsection*{Dense SIFT}
+\addcontentsline{toc}{subsection}{Dense SIFT}
+Dense SIFT as described in the Fisher Vector Faces in the Wild paper is adapted is the process of extracting distinctive invariant features \cite{denseSift}. It works by performing 4 stages to transform image data into scale-invariant coordinates relative to local features on the face.
+\begin{enumerate}
+\item Scale-space extreme detection. This searches all scales and image locations to identify points that may be of interest that are invariant to scale and orientation. This is a preliminary step to find out which points would be suitable for feature matching.
+\item Keypoint localisation. At the points found from step 1, a detailed model is fit to determine their location and scale. Keypoints are then chosen based on their measure of stability.
+\item Orientation assignment. In order to provide invariance to the transformations about to happen in 4., one or more orientations are assigned to each keypoint location basied on the local image gradient directions. Any future operations will be performed on image data relative to the assigned orientation, scale and location for each feature.
+\item Keypoint descriptor. By measuring the local image gradients at the selected scale in the region around the keypoint, they can be transformed to allow for significant levels of local shape distortion and change in illumination. This allows us to determine the image features.
+\end{enumerate}
+With the above steps completed, the image features are extracted from the set of reference images and stored in a database ready for further processing. SIFT points are extremely useful due to being highly distinctive. These features are also known as descriptors.
+
+\subsection*{Fisher Vector Encoding}
+\addcontentsline{toc}{subsection}{Fisher Vector Encoding}
+Fisher Vectors describe a set of local features in a single vector. Fisher Vector encoding is the process of combining a large set of vectors into a high dimensional vector representation. By using a Gaussian Mixture Model (GMM) to the vector elements, the derivatives of the log-likelihood of the model can be encoded with respect to it’s parameters. By using the set of local features from Dense SIFT, a highly dimensional Fisher vector can be created. The GMM is seen as a face model, and if plotted on the image, the mean and variance of GMM’s are represented by ellipses of all the features. We can create a representation between the features and the GMM centres by training a GMM with diagonal covariances, then calculate the derivatives with respect to the Gaussian mean and variances. As shown in \cite{improvingFisher}, L2 Normalisation can improve the application of the Fisher Vector 
+
+\subsection*{Large-Margin Dimensionality Reduction}
+\addcontentsline{toc}{subsection}{Large Dimensionality Reduction}
+
+Large-Margin Dimensionality Reduction is the step in which the Fisher Vectors are compressed to small discriminative representation. This will ensure that the face descriptors have a low dimensionality, making the algorithm suitable for large-scale datasets. By taking t
+
+        
+  \subsection*{Labelled Faces in the Wild Dataset}
+\addcontentsline{toc}{subsection}{Labelled Faces in the Wild Dataset}
+
+The Labelled Faces in the Wild Dataset is a database of images collected for the purpose of testing face recognition systems. The main problem it is used for is such that, “Given two pictures, each of which contains a face, decide whether the two people pictured represent the same individual” \cite{labelledFaces}. The database contains 13,233 images, of 5,749 different individuals. 1680 individuals have two or more images in the database, whilst 4,069 have just one. The database contains a wide variety of faces, varying on many factors including pose, lighting, expression, background, race, ethnicity, age, gender, clothing, hairstyles, camera quality, colour saturation and focus. This give a wide range of samples to use in order to test the face recognition system.
+
+The way that this dataset works is by using the pre-defined views (sets of images, some positively matching and others negatively matching). The first is for algorithm development, and the second is for performance reporting. Using these two different views helps ensure that the algorithm will not be skewed for the final results.
+
+               
+%%%%%%%%%%%%%%%%%%%%%%%%%
+%       APPENDICES      %
+%%%%%%%%%%%%%%%%%%%%%%%%%
+ 
+        \newpage
+ 
+        \begin{appendices}
+ 
+        \end{appendices}       
+       
+       
+%%%%%%%%%%%%%%%%%%%%%%%%%
+%      BIBLIOGRAPHY     %
+%%%%%%%%%%%%%%%%%%%%%%%%%
+        \newpage
+ 
+        \bibliographystyle{abbrv}
+\bibliography{interim.bib}
+
+\end{document}
+
+%\documentclass[12pt, a4paper]{report}
+%
+%\usepackage{cite, url}
+%\newcommand{\HRule}{\rule{\linewidth}{0.5mm}} % Defines a new command for the horizontal lines, change thickness here
+%
+%
+%\begin{document}
+%%%%%
+%%-------------- TITLE PAGE -------------%%%%
+%%%%%
+%\begin{titlepage}
+%\center
+%\textsc{\LARGE Electronics and Computer Science  Faculty of Physical and Applied Sciences University of Southampton}\\[1.5cm] % Name of your university/college
+%\textsc{\LARGE Tim Brooks}\\[0.5cm] % Major heading such as course name
+%\textsc{\LARGE 5th December 2013}\\[0.5cm] % Minor heading such as course title
+%\HRule \\[0.4cm]
+%{ \huge \bfseries Faces in the Wild}\\[0.4cm] % Title of your document
+%\HRule \\[1.5cm]
+%\begin{minipage}{0.4\textwidth}
+%\begin{flushleft} \large
+%\emph{Project Supervisor:}\\
+%Professor. Paul \textsc{Lewis} 
+%\end{flushleft}
+%\end{minipage}
+%~
+%\begin{minipage}{0.4\textwidth}
+%\begin{flushright} \large
+%\emph{Second Examiner:} \\
+%Professor. Mark \textsc{Nixon} % Supervisor's Name
+%\end{flushright}
+%\end{minipage}\\[4cm]
+%{\LARGE A progress report submitted for the award of \\ Computer Science MEng}%\\[3cm] % Date, change the \today to a set date if you want to be precise
+%\end{titlepage}
+%%%%%
+%%--------------END TITLE PAGE -------------%%%%
+%%%%%
+%\section*{Abstract}
+%\addcontentsline{toc}{section}{Abstract}
+%Add abstract here
+%
+%\tableofcontents
+%\newpage
+%\section*{Project Goals}
+%\addcontentsline{toc}{section}{Project Goals}
+%The aim for this project is to investigate and implement the method of Face Recognition used in the paper Fisher Vector Faces in the Wild (Simonyan et al) in OpenIMAJ. This method is a pipeline of many state of the art features in Face Recognition, some already used in OpenIMAJ, this project will investigate those and use them in the final implementation. When the method has been implemented into OpenIMAJ, the project will explore the performance of the method against the expected results in the paper [reference], and the results against other methods, including the state of the art High Dimensionality Local Binary Patterns (High-LBP) [reference] and others, time permitting. An aim of the project is to design it such that it is similar to the design ideology of OpenIMAJ, having very high cohesion between objects.
+%
+%\newpage
+%\section*{Background and report of literature search}
+%\addcontentsline{toc}{section}{Background and report of literature search}
+%The paper Fisher Vector faces in the Wild \cite{simonyan2004fisher} shows that when Fisher vectors are used alongside densely sampled SIFT features, the resulting face recognition system is capable of achieving state-of-the-art face verification performance on the Labelled Faces in the Wild \cite{labelledFaces} benchmark. The paper proceeds to discover how a compact descriptor can be learnt from the fisher vectors using discriminative metric learning, since fisher vectors are highly dimensional. The conclusion of this paper is supported by a set of tables and graphs, detailing the results of tests on the Labelled faces in the wild dataset. It shows that when outside training data is used (unrestricted setting), the pipeline has the second highest mean at 0.9303 with a slightly smaller error margin. This is second to High-Dimensionality LBP at 0.9318 accuracy. In a Restricted setting, where there is no outside training data, the method yielded the highest accuracy of 0.8747, meaning it is the new state-of-the-art in that particular setting. The paper describes the steps it took in order to achieve it’s results, which uses many advanced facial recognition methods. In this literature review, the methods used will be examined, along with work related to Face Recognition.
+%
+%In \cite{simonyan2004fisher}, there is a description of the processing pipeline used to achieve the high standard of facial recognition. This consists of the following parts:
+%\begin{itemize}
+%\item Facial landmark detection
+%\item Align and crop face
+%\item Dense Scale Invariant Feature Transformation, Gaussian Mixture Modelling and Fisher Vector Encoding
+%\item Discriminative Dimensionality Reduction
+%\item Compact Face Representation
+%
+%\end{itemize}
+%\subsection*{OpenIMAJ}
+%\addcontentsline{toc}{subsection}{OpenIMAJ}
+%OpenIMAJ is an Open Intelligent Multimedia Analysis toolkit for Java \cite{openimaj}. It consists of a set of libraries and tools used for multimedia content analysis and content generation. OpenIMAJ already utilises several components needed for the Fisher Vector face recognition implementation. It contains the necessary code for Facial Landmark Detection, Align and Crop,  Dense SIFT, Principal Component Analysis. 
+%For Facial Landmark Detection, there is a class in OpenIMAJ that can be used, the FKEFaceDetector (Front Keypoint Enriched Face Detector). There is also the AffineAligner that can be used in order to perform the Align and Crop face. 
+%
+%\subsection*{Dense SIFT}
+%\addcontentsline{toc}{subsection}{Dense SIFT}
+%Dense SIFT as described in the Fisher Vector Faces in the Wild paper is adapted is the process of extracting distinctive invariant features \cite{denseSift}. It works by performing 4 stages to transform image data into scale-invariant coordinates relative to local features on the face.
+%\begin{enumerate}
+%\item Scale-space extreme detection. This searches all scales and image locations to identify points that may be of interest that are invariant to scale and orientation. This is a preliminary step to find out which points would be suitable for feature matching.
+%\item Keypoint localisation. At the points found from step 1, a detailed model is fit to determine their location and scale. Keypoints are then chosen based on their measure of stability.
+%\item Orientation assignment. In order to provide invariance to the transformations about to happen in 4., one or more orientations are assigned to each keypoint location basied on the local image gradient directions. Any future operations will be performed on image data relative to the assigned orientation, scale and location for each feature.
+%\item Keypoint descriptor. By measuring the local image gradients at the selected scale in the region around the keypoint, they can be transformed to allow for significant levels of local shape distortion and change in illumination. This allows us to determine the image features.
+%\end{enumerate}
+%With the above steps completed, the image features are extracted from the set of reference images and stored in a database ready for further processing. SIFT points are extremely useful due to being highly distinctive. These features are also known as descriptors.
+%
+%\subsection*{Fisher Vector Encoding}
+%\addcontentsline{toc}{subsection}{Fisher Vector Encoding}
+%Fisher Vectors describe a set of local features in a single vector. Fisher Vector encoding is the process of combining a large set of vectors into a high dimensional vector representation. By using a Gaussian Mixture Model (GMM) to the vector elements, the derivatives of the log-likelihood of the model can be encoded with respect to it’s parameters. By using the set of local features from Dense SIFT, a highly dimensional Fisher vector can be created. The GMM is seen as a face model, and if plotted on the image, the mean and variance of GMM’s are represented by ellipses of all the features. We can create a representation between the features and the GMM centres by training a GMM with diagonal covariances, then calculate the derivatives with respect to the Gaussian mean and variances. As shown in \cite{improvingFisher}, L2 Normalisation can improve the application of the Fisher Vector 
+%
+%\subsection*{Large-Margin Dimensionality Reduction}
+%\addcontentsline{toc}{subsection}{Large Dimensionality Reduction}
+%
+%Large-Margin Dimensionality Reduction is the step in which the Fisher Vectors are compressed to small discriminative representation. This will ensure that the face descriptors have a low dimensionality, making the algorithm suitable for large-scale datasets. By taking t
+%
+%\subsection*{Labelled Faces in the Wild Dataset}
+%\addcontentsline{toc}{subsection}{Labelled Faces in the Wild Dataset}
+%
+%The Labelled Faces in the Wild Dataset is a database of images collected for the purpose of testing face recognition systems. The main problem it is used for is such that, “Given two pictures, each of which contains a face, decide whether the two people pictured represent the same individual” \cite{labelledFaces}. The database contains 13,233 images, of 5,749 different individuals. 1680 individuals have two or more images in the database, whilst 4,069 have just one. The database contains a wide variety of faces, varying on many factors including pose, lighting, expression, background, race, ethnicity, age, gender, clothing, hairstyles, camera quality, colour saturation and focus. This give a wide range of samples to use in order to test the face recognition system.
+%
+%The way that this dataset works is by using the pre-defined views (sets of images, some positively matching and others negatively matching). The first is for algorithm development, and the second is for performance reporting. Using these two different views helps ensure that the algorithm will not be skewed for the final results.
+%\newpage
+%\section*{Report on Technical Progress}
+%\addcontentsline{toc}{section}{Report on Technical Progress}
+%Tech progress report
+%\newpage
+%\section*{Plan of Remaining Work}
+%\addcontentsline{toc}{section}{Plan of Remaining Work}
+%Plan of remaining work
+%
+%\bibliographystyle{abbrv}
+%\bibliography{interim.bib}
+%
+%\end{document}
+%
