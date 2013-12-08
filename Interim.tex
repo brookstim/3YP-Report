@@ -85,7 +85,7 @@
 The aim for this project is to investigate and implement the method of Face Recognition used in the paper Fisher Vector Faces in the Wild (Simonyan et al) in OpenIMAJ. This method is a pipeline of many state of the art features in Face Recognition, some already used in OpenIMAJ, this project will investigate those and use them in the final implementation. When the method has been implemented into OpenIMAJ, the project will explore the performance of the method against the expected results in the paper [reference], and the results against other methods, including the state of the art High Dimensionality Local Binary Patterns (High-LBP) [reference] and others, time permitting. An aim of the project is to design it such that it is similar to the design ideology of OpenIMAJ, having very high cohesion between objects.
 
 \newpage
-\section*{Background and report of literature search}
+\section{Background and report of literature search}
 \addcontentsline{toc}{section}{Background and report of literature search}
 The paper Fisher Vector faces in the Wild \cite{simonyan2004fisher} shows that when Fisher vectors are used alongside densely sampled SIFT features, the resulting face recognition system is capable of achieving state-of-the-art face verification performance on the Labelled Faces in the Wild \cite{labelledFaces} benchmark. The paper proceeds to discover how a compact descriptor can be learnt from the fisher vectors using discriminative metric learning, since fisher vectors are highly dimensional. The conclusion of this paper is supported by a set of tables and graphs, detailing the results of tests on the Labelled faces in the wild dataset. It shows that when outside training data is used (unrestricted setting), the pipeline has the second highest mean at 0.9303 with a slightly smaller error margin. This is second to High-Dimensionality LBP at 0.9318 accuracy. In a Restricted setting, where there is no outside training data, the method yielded the highest accuracy of 0.8747, meaning it is the new state-of-the-art in that particular setting. The paper describes the steps it took in order to achieve it’s results, which uses many advanced facial recognition methods. In this literature review, the methods used will be examined, along with work related to Face Recognition.
 
@@ -131,10 +131,25 @@ The Labelled Faces in the Wild Dataset is a database of images collected for the
 The way that this dataset works is by using the pre-defined views (sets of images, some positively matching and others negatively matching). The first is for algorithm development, and the second is for performance reporting. Using these two different views helps ensure that the algorithm will not be skewed for the final results.
 
 \section{Report on Technical Progress}
-\subsection{Planning - Analysis and Design}
+\subsection{Analysis}
 \subsubsection{Requirements}
-A requirements specification has been created for an implementation of an algorithm, using research discussed in section 2.
+A requirements specification has been created for an implementation of an algorithm, using research discussed in section 1. Functional Requirements describe what the project will do. Non-functional requirements explain how the project will do so.
 
+\textbf{Functional Requirements}
+\begin{itemize}
+\item The project will use the Fisher Vector encoding face recognition pipeline used in \cite{simonyan2004fisher}.
+\item The project will compare two images and output if they are the same or not. The ability to assess if two images are the same is a basic requirement of face recognition.
+\item The project will use the Labelled Faces in the Wild image dataset - The Labelled Faces in the Wild dataset is a very common dataset used to test the effectiveness of face recognition algorithms. By using this dataset, I am able to compare to published results of other face recognition methods - including the results achieved by \cite{simonyan2004fisher}.
+\item The project will be able to evaluate the results by creating a Receiving Operating Characteristic Equal Error Rate (ROC-EER) graph. A ROC-EER graph is created by plotting the proportion of true positives out of the total actual positives, against the fraction of false positives out of the actual total negatives, this is useful as it will allow comparison between the implementation and other face recognition methods.
+\item The project will be able to evaluate by outputting a classification accuracy - the percentage of image pairs correctly classified. This will also help evaluate the implementation against the other face recognition methods.
+\end{itemize}
+
+\textbf{Non-functional}
+\begin{itemize}
+\item The project will be written in Java and be able to work with OpenIMAJ - The main aim of this project is to implement the face recognition in OpenIMAJ, a Java library.
+\item Use existing classes in OpenIMAJ where possible. OpenIMAJ has many classes ready to be used, the implementation of this project will be in such a way that if there is an already existing method, it will be tested to ensure it’s effectiveness, and used.
+\item Create each step of the pipeline individually, so they can be used standalone in the future. Such to the nature of OpenIMAJ, by ensuring that each algorithm used is implemented in it’s own class, it will be able to be used in other OpenIMAJ projects, not just this one. 
+\end{itemize}
 \begin{longtable} {| p{1.7cm} | p{3cm} | p{6cm} | p{1.7cm} | p{2cm} |}  
 \multicolumn{5}{c}
 {\tablename\ \thetable\ -- \textit{Continued from previous page}} \\
@@ -145,6 +160,17 @@ A requirements specification has been created for an implementation of an algori
 3 & Misjudging time needed for the project & The whole project wouldn't be completed to it's full potential, this would affect the final outcomes as set out in the requirements & 2 & Low \\ \hline
 4 & Dataset no longer available & This would cause a number of issues and slight delays due to the evaluation method being based around the Labelled Faces in the Wild dataset. & 3 & Medium \\ \hline 
     \end{longtable}
+
+\subsection{Design}
+\subsubsection{Implementation}
+
+\subsubsection{Tools} 
+This project will be developed using Eclipse as a development environment. Eclipse allows for easy cross platform integration, allowing the opportunity to work on Mac, Linux and Windows with ease. Eclipse has an advanced set of debugging tools available to be used, which will be of great help if the project comes in to any difficulties.\\ 
+OpenIMAJ, whilst is the focus of this project, is going to be used in development. OpenIMAJ contains several tools needed for implementing the face recognition method, and they will be tested to ensure suitability and used accordingly. \\
+\LaTeX{} will be used to create and present the Project Brief, Progress Report and the Final Report. \LaTeX{} is a document preparation and typesetting program to output a report. This will give the project more flexibilty over the content of the reports, and allows the author present a professional report each time. To write the \LaTeX{}, the program TexMaker will be used. This program is a productive way to write \LaTeX{}, with an built in compiler, it outputs the document in the same window, allowing for fast writing and formatting.\\
+BibTeX will be used to handle references in the \LaTeX{} document. This allows for fast and easy referencing in the reports. A separate .bib file is created in a text editor and populated with the references in the BibTeX format. They can then be easily used in the \LaTeX{} document.\\
+To ensure that no work is lost, Git version control will be used in conjunction with a remote repository hosted privately on Github. Git is useful for several reasons. It is a way of backing up to a remote location, and so will reduce the effects of a large loss of work from a local workstation, as it will be available to access from Github. Being able to use version control is great for development, as new branches allow work to be carried out without affecting the master copy. This will be especially useful in the stages of the project where the face recognition method is being optimised to achieve the best results possible. Git will also be used to store and version control the Project Reports.
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%
 %       APPENDICES      %
