@@ -36,7 +36,7 @@
                 {\Large Tim Brooks}\\[0.5cm]
                 {\Large \today}\\[2.5cm]
                
-                {\LARGE Faces in the Wild}\\[3.0cm]
+                {\LARGE Face Recognition in the Wild}\\[3.0cm]
                
                 {\large First Examiner: Dr Paul Lewis}\\[0.5cm]
                 {\large Second Examiner: Dr Mark Nixon}\\[3.2cm]
@@ -80,7 +80,11 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%
  
         \newpage
- \section*{Project Goals}
+ \section{Project Introduction and Goals}
+ \subsection{Introduction}
+ Faces are used by humans as a way of recognising individuals, over the past few decades, algorithms have been developed that can recognise faces. These algorithms are constantly improving, as more and more technology is beginning to use Face Recognition. Face Recognition in the wild is the process of detecting and recognising faces that are not fully aligned to the camera, from more natural pictures. Face Recognition is a more trivial use of Face Detection, it incorporates recognition into detecting and recognising who the face belongs to. Currently, a Face Recognition pipeline has been implemented in OpenIMAJ, but it has not been very well tested, nor does it make use of the most effective method for Face Recognition.
+
+ \subsection{Goals}
 \addcontentsline{toc}{section}{Project Goals}
 The aim for this project is to investigate and implement the method of Face Recognition used in the paper Fisher Vector Faces in the Wild (Simonyan et al) in OpenIMAJ. This method is a pipeline of many state of the art features in Face Recognition, some already used in OpenIMAJ, this project will investigate those and use them in the final implementation. When the method has been implemented into OpenIMAJ, the project will explore the performance of the method against the expected results in the paper [reference], and the results against other methods, including the state of the art High Dimensionality Local Binary Patterns (High-LBP) [reference] and others, time permitting. An aim of the project is to design it such that it is similar to the design ideology of OpenIMAJ, having very high cohesion between objects.
 
@@ -162,8 +166,22 @@ A requirements specification has been created for an implementation of an algori
     \end{longtable}
 
 \subsection{Design}
-\subsubsection{Implementation}
-
+\subsubsection{Proposed Final Design}
+This project has been split down into several sections in order to help structure the implementation of it. Each section is as follows:
+\begin{itemize}
+\item Evaluation Methods
+\item Facial Landmark Detection
+\item Dense SIFT
+\item Gaussian Mixture Model
+\item Fisher Vector Encoding
+\item Discriminative Dimensionality Reduction
+\item Compact Face Representation
+\item Pipeline implementation
+\item Evaluation
+\end{itemize}
+The way that the implementations have been planned allow a clear design structure to be concluded. Each implementation will be created as an individual class or set of classes. This will result in a highly cohesive project, helping with project management. In the long term it will encourage the reuse of code in other OpenIMAJ projects. Below is a class diagram, based on work completed and plans for future work.
+[INSERT CLASS DIAGRAMS]
+The project will run from command line to output the results for the evaluation. If time allows, this project may create a Graphical User Interface to run the evaluation tools, however, this is not a requirement for project success.
 \subsubsection{Tools} 
 This project will be developed using Eclipse as a development environment. Eclipse allows for easy cross platform integration, allowing the opportunity to work on Mac, Linux and Windows with ease. Eclipse has an advanced set of debugging tools available to be used, which will be of great help if the project comes in to any difficulties.\\ 
 OpenIMAJ, whilst is the focus of this project, is going to be used in development. OpenIMAJ contains several tools needed for implementing the face recognition method, and they will be tested to ensure suitability and used accordingly. \\
@@ -171,7 +189,34 @@ OpenIMAJ, whilst is the focus of this project, is going to be used in developmen
 BibTeX will be used to handle references in the \LaTeX{} document. This allows for fast and easy referencing in the reports. A separate .bib file is created in a text editor and populated with the references in the BibTeX format. They can then be easily used in the \LaTeX{} document.\\
 To ensure that no work is lost, Git version control will be used in conjunction with a remote repository hosted privately on Github. Git is useful for several reasons. It is a way of backing up to a remote location, and so will reduce the effects of a large loss of work from a local workstation, as it will be available to access from Github. Being able to use version control is great for development, as new branches allow work to be carried out without affecting the master copy. This will be especially useful in the stages of the project where the face recognition method is being optimised to achieve the best results possible. Git will also be used to store and version control the Project Reports.
 
+\subsection{Work completed to date}
+So far in this project, work has been spent on research and first stages of development. At the beginning of this project, a gantt chart was created [Appendix GANTT] which shows the breakdown of each task, and the time taken to complete them. At this stage of the project, everything up until the Implementation of Fisher Vector Encoding should be completed. However, due to a variety of reasons, this is not the case. The author has found that due to the topic of the project, several stages took far longer than originally planned. The background reading and research ended up taking longer than planned, this was due to the reading into face recognition, and time was being spent trying to fully understand the methods employed by [reference paper]. Approximately 50 hours has been spent in total on Background Research and Background Reading, with larger amount of time being spent on research into OpenIMAJ, including learning how to use it and research into already available packages. The literature review also took longer than planned, at about 25 hours. To this date, the work completed is up to the Evaluation Methods, with them taking approximately 20 hours, as opposed to the 8 hours. 
 
+Within the Gantt Chart, I included Other Semester 1 courseworks, this is vital to help with project management, as it allows the project to be looked at from a wider scale of the semester, and if internal deadlines set are likely to be met.
+Whilst these are setbacks, they are setting a better basis for the rest of the project. More time will be allocated over Christmas to make up the time that has been lost. From experience and knowledge learnt from Semester 1, a new Gantt Chart has been created to reflect the work already completed, and the plan of the work to be completed. [Appendix NEW GANTT]
+
+\section{Plan of remaining work}
+Work has been split into wider sections, the implementation and the evaluation. By creating deadlines for both of these sections, deadlines internal to the sections can be created and utilised. This will give the best opportunity possible for the project to be kept on track and finished within good time.
+For the implementation, the following needs to be completed
+\begin{itemize}
+\item Dense SIFT 
+\item Gaussian Mixture Model 
+\item Fisher Vector Encoding 
+\item Discriminative Dimensionality Reduction 
+\item Compact Face Representation 
+\item Pipeline implementation
+\item Testing
+\end{itemize}
+
+Some of this work will be completed over the Christmas holidays, although time needs to be considered for the author’s 4 January exams and January coursework deadline. 
+For the evaluation, the following needs to be completed 
+\begin{itemize}
+\item Evaluation using the Labelled Faces in the Wild dataset
+\item Evaluation of other methods using LFW
+\item Comparison of different methods and datasets
+\item Final Report
+\end{itemize}
+From what has been learnt from the original Gantt Chart, the updated Gantt Chart reflects the work to be completed. The project aims to be completed towards the end of March (18th-25th March), with further work to be carried out on the Final Report up until the deadline. A deadline of the 14th April has been set in advance of the course deadline to ensure the project is completed in good time.
 %%%%%%%%%%%%%%%%%%%%%%%%%
 %       APPENDICES      %
 %%%%%%%%%%%%%%%%%%%%%%%%%
