@@ -58,7 +58,8 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%
  
         \begin{abstract}
-               
+               OpenIMAJ is an award winning set of libraries and tools for image manipulation. Currently, a pipeline for Face Recognition in the Wild has not been implemented in OpenIMAJ, this project is implementing a Face Recognition in the Wild pipeline, and investigating it’s effectiveness against other methods.
+This report is to detail the progress made so far on the project of Face Recognition in the Wild. In this report, four main areas are examined of the project progress. From these, conclusions have been drawn detailing how the project has progressed. So far, the Evaluation methods have been completed, ready for the development of the pipeline. It can be seen that the project has not reached the expected stage initially set out at the beginning, and considerations from this have been made to create an outline of remaining work to be completed. 
         \end{abstract}
        
         \newpage
@@ -85,12 +86,10 @@
  Faces are used by humans as a way of recognising individuals, over the past few decades, algorithms have been developed that can recognise faces. These algorithms are constantly improving, as more and more technology is beginning to use Face Recognition. Face Recognition in the wild is the process of detecting and recognising faces that are not fully aligned to the camera, from more natural pictures. Face Recognition is a more trivial use of Face Detection, it incorporates recognition into detecting and recognising who the face belongs to. Currently, a Face Recognition pipeline has been implemented in OpenIMAJ, but it has not been very well tested, nor does it make use of the most effective method for Face Recognition.
 
  \subsection{Goals}
-\addcontentsline{toc}{section}{Project Goals}
-The aim for this project is to investigate and implement the method of Face Recognition used in the paper Fisher Vector Faces in the Wild (Simonyan et al) in OpenIMAJ. This method is a pipeline of many state of the art features in Face Recognition, some already used in OpenIMAJ, this project will investigate those and use them in the final implementation. When the method has been implemented into OpenIMAJ, the project will explore the performance of the method against the expected results in the paper [reference], and the results against other methods, including the state of the art High Dimensionality Local Binary Patterns (High-LBP) [reference] and others, time permitting. An aim of the project is to design it such that it is similar to the design ideology of OpenIMAJ, having very high cohesion between objects.
+The aim for this project is to investigate and implement the method of Face Recognition used in \cite{simonyan2004fisher} in OpenIMAJ. This method is a pipeline of many state of the art features in Face Recognition, some already used in OpenIMAJ, this project will investigate those and use them in the final implementation. When the method has been implemented into OpenIMAJ, the project will explore the performance of the method against the expected results, and the results against other methods, including the state of the art High Dimensionality Local Binary Patterns (High-LBP) \cite{highlbpsift}, and others, time permitting. An aim of the project is to design it such that it is similar to the design ideology of OpenIMAJ, having very high cohesion between objects.
 
 \newpage
 \section{Background and report of literature search}
-\addcontentsline{toc}{section}{Background and report of literature search}
 The paper Fisher Vector faces in the Wild \cite{simonyan2004fisher} shows that when Fisher vectors are used alongside densely sampled SIFT features, the resulting face recognition system is capable of achieving state-of-the-art face verification performance on the Labelled Faces in the Wild \cite{labelledFaces} benchmark. The paper proceeds to discover how a compact descriptor can be learnt from the fisher vectors using discriminative metric learning, since fisher vectors are highly dimensional. The conclusion of this paper is supported by a set of tables and graphs, detailing the results of tests on the Labelled faces in the wild dataset. It shows that when outside training data is used (unrestricted setting), the pipeline has the second highest mean at 0.9303 with a slightly smaller error margin. This is second to High-Dimensionality LBP at 0.9318 accuracy. In a Restricted setting, where there is no outside training data, the method yielded the highest accuracy of 0.8747, meaning it is the new state-of-the-art in that particular setting. The paper describes the steps it took in order to achieve it’s results, which uses many advanced facial recognition methods. In this literature review, the methods used will be examined, along with work related to Face Recognition.
 
 In \cite{simonyan2004fisher}, there is a description of the processing pipeline used to achieve the high standard of facial recognition. This consists of the following parts:
@@ -102,13 +101,11 @@ In \cite{simonyan2004fisher}, there is a description of the processing pipeline 
 \item Compact Face Representation
 
 \end{itemize}
-\subsection*{OpenIMAJ}
-\addcontentsline{toc}{subsection}{OpenIMAJ}
+\subsection{OpenIMAJ}
 OpenIMAJ is an Open Intelligent Multimedia Analysis toolkit for Java \cite{openimaj}. It consists of a set of libraries and tools used for multimedia content analysis and content generation. OpenIMAJ already utilises several components needed for the Fisher Vector face recognition implementation. It contains the necessary code for Facial Landmark Detection, Align and Crop,  Dense SIFT, Principal Component Analysis. 
 For Facial Landmark Detection, there is a class in OpenIMAJ that can be used, the FKEFaceDetector (Front Keypoint Enriched Face Detector). There is also the AffineAligner that can be used in order to perform the Align and Crop face. 
 
-\subsection*{Dense SIFT}
-\addcontentsline{toc}{subsection}{Dense SIFT}
+\subsection{Dense SIFT}
 Dense SIFT as described in the Fisher Vector Faces in the Wild paper is adapted is the process of extracting distinctive invariant features \cite{denseSift}. It works by performing 4 stages to transform image data into scale-invariant coordinates relative to local features on the face.
 \begin{enumerate}
 \item Scale-space extreme detection. This searches all scales and image locations to identify points that may be of interest that are invariant to scale and orientation. This is a preliminary step to find out which points would be suitable for feature matching.
@@ -118,17 +115,14 @@ Dense SIFT as described in the Fisher Vector Faces in the Wild paper is adapted 
 \end{enumerate}
 With the above steps completed, the image features are extracted from the set of reference images and stored in a database ready for further processing. SIFT points are extremely useful due to being highly distinctive. These features are also known as descriptors.
 
-\subsection*{Fisher Vector Encoding}
-\addcontentsline{toc}{subsection}{Fisher Vector Encoding}
+\subsection{Fisher Vector Encoding}
 Fisher Vectors describe a set of local features in a single vector. Fisher Vector encoding is the process of combining a large set of vectors into a high dimensional vector representation. By using a Gaussian Mixture Model (GMM) to the vector elements, the derivatives of the log-likelihood of the model can be encoded with respect to it’s parameters. By using the set of local features from Dense SIFT, a highly dimensional Fisher vector can be created. The GMM is seen as a face model, and if plotted on the image, the mean and variance of GMM’s are represented by ellipses of all the features. We can create a representation between the features and the GMM centres by training a GMM with diagonal covariances, then calculate the derivatives with respect to the Gaussian mean and variances. As shown in \cite{improvingFisher}, L2 Normalisation can improve the application of the Fisher Vector 
 
-\subsection*{Large-Margin Dimensionality Reduction}
-\addcontentsline{toc}{subsection}{Large Dimensionality Reduction}
+\subsection{Large-Margin Dimensionality Reduction}
 
 Large-Margin Dimensionality Reduction is the step in which the Fisher Vectors are compressed to small discriminative representation. This stage is where the calculation is made that determines if the two given faces are the same or not. In \cite{highlbpsift} it details the method, explaining how a high dimensional fisher vector can be projected to a low dimensional vector, in order for the squared euclidian distance can be calculated. If the squared euclidian distance between the two images are smaller than a threshold, then they are the same person in the image.
         
-  \subsection*{Labelled Faces in the Wild Dataset}
-\addcontentsline{toc}{subsection}{Labelled Faces in the Wild Dataset}
+  \subsection{Labelled Faces in the Wild Dataset}
 
 The Labelled Faces in the Wild Dataset is a database of images collected for the purpose of testing face recognition systems. The main problem it is used for is such that, “Given two pictures, each of which contains a face, decide whether the two people pictured represent the same individual” \cite{labelledFaces}. The database contains 13,233 images, of 5,749 different individuals. 1680 individuals have two or more images in the database, whilst 4,069 have just one. The database contains a wide variety of faces, varying on many factors including pose, lighting, expression, background, race, ethnicity, age, gender, clothing, hairstyles, camera quality, colour saturation and focus. This give a wide range of samples to use in order to test the face recognition system.
 
@@ -154,16 +148,8 @@ A requirements specification has been created for an implementation of an algori
 \item Use existing classes in OpenIMAJ where possible. OpenIMAJ has many classes ready to be used, the implementation of this project will be in such a way that if there is an already existing method, it will be tested to ensure it’s effectiveness, and used.
 \item Create each step of the pipeline individually, so they can be used standalone in the future. Such to the nature of OpenIMAJ, by ensuring that each algorithm used is implemented in it’s own class, it will be able to be used in other OpenIMAJ projects, not just this one. 
 \end{itemize}
-\begin{longtable} {| p{1.7cm} | p{3cm} | p{6cm} | p{1.7cm} | p{2cm} |}  
-\multicolumn{5}{c}
-{\tablename\ \thetable\ -- \textit{Continued from previous page}} \\
-    \hline
-    \textbf{Risk ID} & \textbf{Risk} & \textbf{Outcome(s)} & \textbf{Impact} & \textbf{Risk Factor} \\ \hline \hline
-1 & Hardware failure on the main development machine & System would need rebuilding or hardware would need replacing. Would cause significant delays & 5 & High \\ \hline
-2 & Authors personal issues (e.g. illness) & Could cause long term delays to the project development & 3 & Medium \\ \hline
-3 & Misjudging time needed for the project & The whole project wouldn't be completed to it's full potential, this would affect the final outcomes as set out in the requirements & 2 & Low \\ \hline
-4 & Dataset no longer available & This would cause a number of issues and slight delays due to the evaluation method being based around the Labelled Faces in the Wild dataset. & 3 & Medium \\ \hline 
-    \end{longtable}
+\subsubsection{Risks}
+The table in Appendix A.1 outlines the possible problems that would affect the project. Each problem has a an explanation, along with how much it would impact the project (in terms of the amount of time needed to overcome the problem). Along with that, a risk factor is given, determining how much of a risk the problem would be. As you can see, the highest risk is a hardware failure on the development machine, or data corruption. For each risk, a contingency plan has been created, detailing what would happen in each eventuality. A contingency plan has been created, as shown in Appendix A.2. A contingency plan is very useful to have created, as it will not only help overcome and problems in the project if they happen, but will help prevent those problems in the first place. 
 
 \subsection{Design}
 \subsubsection{Proposed Final Design}
@@ -177,9 +163,8 @@ This project has been split down into several sections in order to help structur
 \item Discriminative Dimensionality Reduction
 \item Compact Face Representation
 \item Pipeline implementation
-\item Evaluation
 \end{itemize}
-The way that the implementations have been planned allow a clear design structure to be concluded. Each implementation will be created as an individual class or set of classes. This will result in a highly cohesive project, helping with project management. In the long term it will encourage the reuse of code in other OpenIMAJ projects. Below is a class diagram, based on work completed and plans for future work.
+The way that the implementations have been planned allow a clear design structure to be concluded. Each implementation will be created as an individual class or set of classes. This will result in a highly cohesive project, helping with project management. In the long term it will encourage the reuse of code in other OpenIMAJ projects. The evaluation methods have been created first in order to allow for testing to take place throughout the project. Below is a class diagram, based on work completed and plans for future work.
 [INSERT CLASS DIAGRAMS]
 The project will run from command line to output the results for the evaluation. If time allows, this project may create a Graphical User Interface to run the evaluation tools, however, this is not a requirement for project success.
 \subsubsection{Tools} 
@@ -190,10 +175,10 @@ BibTeX will be used to handle references in the \LaTeX{} document. This allows f
 To ensure that no work is lost, Git version control will be used in conjunction with a remote repository hosted privately on Github. Git is useful for several reasons. It is a way of backing up to a remote location, and so will reduce the effects of a large loss of work from a local workstation, as it will be available to access from Github. Being able to use version control is great for development, as new branches allow work to be carried out without affecting the master copy. This will be especially useful in the stages of the project where the face recognition method is being optimised to achieve the best results possible. Git will also be used to store and version control the Project Reports.
 
 \subsection{Work completed to date}
-So far in this project, work has been spent on research and first stages of development. At the beginning of this project, a gantt chart was created [Appendix GANTT] which shows the breakdown of each task, and the time taken to complete them. At this stage of the project, everything up until the Implementation of Fisher Vector Encoding should be completed. However, due to a variety of reasons, this is not the case. The author has found that due to the topic of the project, several stages took far longer than originally planned. The background reading and research ended up taking longer than planned, this was due to the reading into face recognition, and time was being spent trying to fully understand the methods employed by [reference paper]. Approximately 50 hours has been spent in total on Background Research and Background Reading, with larger amount of time being spent on research into OpenIMAJ, including learning how to use it and research into already available packages. The literature review also took longer than planned, at about 25 hours. To this date, the work completed is up to the Evaluation Methods, with them taking approximately 20 hours, as opposed to the 8 hours. 
+So far in this project, work has been spent on research and first stages of development. At the beginning of this project, a gantt chart was created [Appendix GANTT] which shows the breakdown of each task, and the time taken to complete them. At this stage of the project, everything up until the Implementation of Fisher Vector Encoding should be completed. However, due to a variety of reasons, this is not the case. The author has found that due to the topic of the project, several stages took far longer than originally planned. The background reading and research  taking longer than planned, this was due to the reading into face recognition, and time was being spent trying to fully understand the methods employed by [reference paper]. Approximately 50 hours has been spent in total on Background Research and Background Reading, with larger amount of time being spent on research and into OpenIMAJ, including learning how to use it and research into already available packages. The literature review also took longer than planned, at about 25 hours. To this date, the work completed is up to the Evaluation Methods, with them taking approximately 20 hours, as opposed to the 8 hours. 
 
-Within the Gantt Chart, I included Other Semester 1 courseworks, this is vital to help with project management, as it allows the project to be looked at from a wider scale of the semester, and if internal deadlines set are likely to be met.
-Whilst these are setbacks, they are setting a better basis for the rest of the project. More time will be allocated over Christmas to make up the time that has been lost. From experience and knowledge learnt from Semester 1, a new Gantt Chart has been created to reflect the work already completed, and the plan of the work to be completed. [Appendix NEW GANTT]
+Within the Gantt Chart, I included other Semester 1 courseworks, this is vital to help with project management, as it allows the project to be looked at from a wider scale of the semester, and if internal deadlines set are likely to be met.
+Whilst these are setbacks, they are setting a better basis for the rest of the project. More time will be allocated over Christmas to make up the time that has been lost. From experience and knowledge learnt from Semester 1, a new Gantt Chart has been created to reflect the work already completed, and the plan of the work to be completed. [Appendix New Gantt Chart]
 
 \section{Plan of remaining work}
 Work has been split into wider sections, the implementation and the evaluation. By creating deadlines for both of these sections, deadlines internal to the sections can be created and utilised. This will give the best opportunity possible for the project to be kept on track and finished within good time.
@@ -224,7 +209,34 @@ From what has been learnt from the original Gantt Chart, the updated Gantt Chart
         \newpage
  
         \begin{appendices}
- 
+        
+\section{Appendix A}
+\subsection{}
+ \begin{longtable} {| p{1.7cm} | p{3cm} | p{6cm} | p{1.7cm} | p{2cm} |}  
+\multicolumn{5}{c}
+{\tablename\ \thetable\ -- \textit{Risks}} \\
+    \hline
+    \textbf{Risk ID} & \textbf{Risk} & \textbf{Outcome(s)} & \textbf{Impact} & \textbf{Risk Factor} \\ \hline
+1 & Hardware failure on the main development machine & System would need rebuilding or hardware would need replacing. Would cause large delays & 5 & High \\ \hline
+2 & Data corruption & Work would have to be restarted from the most recent backup. Depending on when the most recent backup was, this would cause large delays. & 5 & High \\ \hline 
+3 & Authors personal issues (e.g. illness) & Could cause long term delays to the project development & 4 & High\\ \hline
+4 & Misjudging time needed for the project & The whole project wouldn't be completed to it's full potential, this would affect the final outcomes as set out in the requirements & 3 & Medium\\ \hline
+5 & Dataset no longer available & This would cause a number of issues and slight delays due to the evaluation method being based around the Labelled Faces in the Wild dataset. & 3 & Medium \\ \hline 
+    \end{longtable}
+    \newpage
+\subsection{}
+ \begin{longtable} {| p{1.7cm} | p{12cm}| }  
+\multicolumn{2}{c}
+{\tablename\ \thetable\ -- \textit{Contingency Plan Table}} \\
+    \hline
+    \textbf{Risk ID} & \textbf{Contingency Plan} \\ \hline 
+1 & In the event of a hardware failure on the main development machine, the plan of action. If this happened a few days before a major deadline, a new machine would be used to continue the work, provided there is a very recent backup. If it happened further from the deadline, or no backups have been made of the recent work, attempts to fix the machine would take place. \\ \hline
+2 & In the event of data corruption, the most recent copy will be downloaded from the version control repository. A main reason why Git is being used at an external repository is for the backup functionality, hopefully preventing any data loss. This is only a successful plan if the author is consistent at using Git\\ \hline 
+3 & In the event of the author having personal issues, advice would be sought after from the project supervisor and personal tutor, Dr. Paul Lewis and Dr. Enrico Costanza, and if necessary, further action will be taken to make the Faculty aware of the issues.  \\ \hline
+4 & In the event of there not being enough time to complete the project due to poor time allocation, efforts would be focussed on completing as much as possible to achieve the minimum set out in the requirements. \\ \hline
+5 & The dataset has been downloaded, so in the event of the dataset no longer being online to download, the project will not be affected. \\ \hline 
+    \end{longtable}
+
         \end{appendices}       
        
        
