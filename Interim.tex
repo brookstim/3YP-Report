@@ -7,6 +7,9 @@
  \usepackage{longtable}
 %Customise layout of Contents page
 \usepackage{tocloft}
+%\usepackage{caption}
+%\usepackage{subfigure}
+\usepackage{float}
 %Hyperlinks in contents
 \usepackage[hidelinks]{hyperref}
 %Dotted lines in table of contents
@@ -39,10 +42,9 @@
                
                 {\LARGE Face Recognition in the Wild}\\[3.0cm]
                
-                {\large First Examiner: Dr Paul Lewis}\\[0.5cm]
-                {\large Second Examiner: Dr Mark Nixon}\\[3.2cm]
-               
-                {\large A Project Progress Report\\ Submitted For The Award Of:}\\[0.2cm]
+                {\Large First Examiner: Dr Paul Lewis}\\[0.5cm]
+                {\Large Second Examiner: Dr Mark Nixon}\\[3.2cm]
+                {\Large A Project Progress Report \\\ Submitted For The Award Of:}\\[0.2cm]
                 {\Large MEng Computer Science}
                
                 \vfill
@@ -129,10 +131,30 @@ The Labelled Faces in the Wild Dataset is a database of images collected for the
 
 The way that this dataset works is by using the pre-defined views (sets of images, some positively matching and others negatively matching). The first is for algorithm development, and the second is for performance reporting. Using these two different views helps ensure that the algorithm will not be skewed for the final results.
 
-For example, given the following two images of Paul McCartney and Jon Stewart, the algorithm should correctly classify these as not being the same person. 
+For example, given the following two images of Paul McCartney (Figure 1) and Jon Stewart (Figure 2), the algorithm should correctly classify these as not being the same person. 
 
+\begin{figure}[H]
+\minipage{0.45\textwidth}
+  \includegraphics[width=\linewidth]{images/Jon_Stewart_0001.jpg}
+  \caption{Jon Stewart}
+\endminipage\hfill
+\minipage{0.45\textwidth}
+  \includegraphics[width=\linewidth]{images/Paul_McCartney_0004.jpg}
+  \caption{Paul McCartney}
+\endminipage\hfill
+\end{figure}
 Whereas, given these two images of Mark Wahlberg, the algorithm should correctly classify these as being the same person.
 
+\begin{figure}[H]
+\minipage{0.45\textwidth}
+  \includegraphics[width=\linewidth]{images/Mark_Wahlberg_0001.jpg}
+  \caption{Mark Wahlberg}
+\endminipage\hfill
+\minipage{0.45\textwidth}
+  \includegraphics[width=\linewidth]{images/Mark_Wahlberg_0004.jpg}
+  \caption{Mark Wahlberg}
+\endminipage\hfill
+\end{figure}
 
 \section{Report on Technical Progress}
 \subsection{Analysis}
