@@ -93,7 +93,8 @@ The aim for this project is to investigate and implement the method of Face Reco
 
 \newpage
 \section{Background and report of literature search}
-The paper Fisher Vector faces in the Wild \cite{simonyan2004fisher} shows that when Fisher vectors are used alongside densely sampled SIFT features, the resulting face recognition system is capable of achieving state-of-the-art face verification performance on the Labelled Faces in the Wild \cite{labelledFaces} benchmark. The paper proceeds to discover how a compact descriptor can be learnt from the fisher vectors using discriminative metric learning, since fisher vectors are highly dimensional. The conclusion of this paper is supported by a set of tables and graphs, detailing the results of tests on the Labelled faces in the wild dataset. It shows that when outside training data is used (unrestricted setting), the pipeline has the second highest mean at 0.9303 with a slightly smaller error margin. This is second to High-Dimensionality LBP at 0.9318 accuracy. In a Restricted setting, where there is no outside training data, the method yielded the highest accuracy of 0.8747, meaning it is the new state-of-the-art in that particular setting. The paper describes the steps it took in order to achieve it’s results, which uses many advanced facial recognition methods. In this literature review, the methods used will be examined, along with work related to Face Recognition.
+\subsection{Fisher Vector Faces in the Wild}
+The paper Fisher Vector faces in the Wild \cite{simonyan2004fisher} shows that when Fisher vectors are used alongside densely sampled SIFT features, the resulting face recognition system is capable of achieving state-of-the-art face verification performance on the Labelled Faces in the Wild \cite{labelledFaces} dataset. The paper proceeds to discover how a compact descriptor can be learnt from the fisher vectors using discriminative metric learning, since fisher vectors are highly dimensional. The conclusion of this paper is supported by a set of tables and graphs, detailing the results of tests on the Labelled faces in the wild dataset. Two methods are used to test the algorithm, the unrestricted setting is where outside training data is used, and the restricted setting where no outside training data is used. It shows that when tested under the unrestricted setting, the pipeline has the second highest mean classification accuracy at 0.9303 with a slightly smaller error margin. This is second to High-Dimensionality LBP at 0.9318. In a restricted setting, the method yielded the highest accuracy of 0.8747, meaning it is the new state-of-the-art setting. The paper describes the steps it took in order to achieve it’s results, which uses many advanced facial recognition methods. In this literature review, the methods used will be examined, along with work related to Face Recognition.
 
 In \cite{simonyan2004fisher}, there is a description of the processing pipeline used to achieve the high standard of facial recognition. This consists of the following parts:
 \begin{itemize}
@@ -102,8 +103,8 @@ In \cite{simonyan2004fisher}, there is a description of the processing pipeline 
 \item Dense Scale Invariant Feature Transformation, Gaussian Mixture Modelling and Fisher Vector Encoding
 \item Discriminative Dimensionality Reduction
 \item Compact Face Representation
-
 \end{itemize}
+
 \subsection{OpenIMAJ}
 OpenIMAJ is an Open Intelligent Multimedia Analysis toolkit for Java \cite{openimaj}. It consists of a set of libraries and tools used for multimedia content analysis and content generation. OpenIMAJ already utilises several components needed for the Fisher Vector face recognition implementation. It contains the necessary code for Facial Landmark Detection, Align and Crop,  Dense SIFT, Principal Component Analysis. 
 For Facial Landmark Detection, there is a class in OpenIMAJ that can be used, the FKEFaceDetector (Front Keypoint Enriched Face Detector). There is also the AffineAligner that can be used in order to perform the Align and Crop face. 
@@ -112,18 +113,18 @@ For Facial Landmark Detection, there is a class in OpenIMAJ that can be used, th
 Dense SIFT as described in the Fisher Vector Faces in the Wild paper is adapted as the process of extracting distinctive invariant features. It works by performing 4 stages to transform image data into scale-invariant coordinates relative to local features on the face \cite{denseSift}.
 \begin{enumerate}
 \item Scale-space extreme detection. This searches all scales and image locations to identify points that may be of interest that are invariant to scale and orientation. This is a preliminary step to find out which points would be suitable for feature matching.
-\item Keypoint localisation. At the points found from step 1, a detailed model is fit to determine their location and scale. Keypoints are then chosen based on their measure of stability.
-\item Orientation assignment. In order to provide invariance to the transformations about to happen in 4., one or more orientations are assigned to each keypoint location basied on the local image gradient directions. Any future operations will be performed on image data relative to the assigned orientation, scale and location for each feature.
+\item Keypoint localisation. At the points found from step 1, their location and scale is determined. Keypoints are chosen based on their suitability of
+\item Orientation assignment. In order to provide invariance to the transformations about to happen in 4., one or more orientations are assigned to each keypoint location based on the local image gradient directions. Any future operations will be performed on image data relative to the assigned orientation, scale and location for each feature.
 \item Keypoint descriptor. By measuring the local image gradients at the selected scale in the region around the keypoint, they can be transformed to allow for significant levels of local shape distortion and change in illumination. This allows us to determine the image features.
 \end{enumerate}
 With the above steps completed, the image features are extracted from the set of reference images and stored in a database ready for further processing. SIFT points are extremely useful due to being highly distinctive. These features are also known as descriptors.
 
 \subsection{Fisher Vector Encoding}
-Fisher Vectors describe a set of local features in a single vector. Fisher Vector encoding is the process of combining a large set of vectors into a high dimensional vector representation. By applying a Gaussian Mixture Model (GMM) on the vector elements, the derivatives of the log-likelihood of the model can be encoded with respect to it’s parameters. By using the set of local features from Dense SIFT, a highly dimensional Fisher vector can be created. The GMM is seen as a face model, and if plotted on the image, the mean and variance of GMM’s are represented by ellipses of all the features. We can create a representation between the features and the GMM centres by training a GMM with diagonal covariances, then calculate the derivatives with respect to the Gaussian mean and variances. As shown in \cite{improvingFisher}, L2 Normalisation can improve the application of the Fisher Vector 
+Fisher Vectors describe a set of local features in a single vector. Fisher Vector encoding is the process of combining a large set of vectors into a high dimensional vector representation. By applying a Gaussian Mixture Model (GMM) on the vector elements, the derivatives of the log-likelihood of the model can be encoded with respect to it’s parameters. By using the set of local features from Dense SIFT, a highly dimensional Fisher vector can be created. The GMM is seen as a face model, and if plotted on the image, the mean and variance of GMM’s are represented by ellipses of all the features. A representation can be created between the features and the GMM centres by training a GMM with diagonal covariances, then calculate the derivatives with respect to the Gaussian mean and variances.
 
 \subsection{Large-Margin Dimensionality Reduction}
 
-Large-Margin Dimensionality Reduction is the step in which the Fisher Vectors are compressed to small discriminative representation. This stage is where the calculation is made that determines if the two given faces are the same or not. In \cite{highlbpsift} it details the method, explaining how a high dimensional fisher vector can be projected to a low dimensional vector, in order for the squared euclidian distance can be calculated. If the squared euclidian distance between the two images are smaller than a threshold, then they are the same person in the image.
+Large-Margin Dimensionality Reduction is the step in which the Fisher Vectors are compressed to small discriminative representation. This stage is where the calculation is made that determines if the two given faces are the same or not. In \cite{simonyan2004fisher} it details the method, explaining how a high dimensional fisher vector can be projected to a low dimensional vector, in order for the squared euclidian distance can be calculated. If the squared euclidian distance between the two images are smaller than a threshold, then they are the same person in the image.
         
   \subsection{Labelled Faces in the Wild Dataset}
 
@@ -156,6 +157,7 @@ Whereas, given these two images of Mark Wahlberg, the algorithm should correctly
 \endminipage\hfill
 \end{figure}
 
+\newpage
 \section{Report on Technical Progress}
 \subsection{Analysis}
 \subsubsection{Requirements}
@@ -192,8 +194,8 @@ This project has been split down into several sections in order to help structur
 \item Compact Face Representation
 \item Pipeline implementation
 \end{itemize}
-The way that the implementations have been planned allow a clear design structure to be concluded. Each implementation will be created as an individual class or set of classes. This will result in a highly cohesive project, helping with project management. In the long term it will encourage the reuse of code in other OpenIMAJ projects. The evaluation methods have been created first in order to allow for testing to take place throughout the project. Below is a class diagram, based on work completed and plans for future work.
-[INSERT CLASS DIAGRAMS]
+The way that the implementations have been planned allow a clear design structure to be concluded. Each implementation will be created as an individual class or set of classes. This will result in a highly cohesive project, helping with project management. In the long term it will encourage the reuse of code in other OpenIMAJ projects. The evaluation methods have been created first in order to allow for testing to take place throughout the project. Appendix B.1 shows a class diagram, showing outlines for the design of the pipeline, using pre-existing classes (e.g. AffineAligner), and new classes that will be created (e.g. FVEncode).
+
 The project will run from command line to output the results for the evaluation. If time allows, this project may create a Graphical User Interface to run the evaluation tools, however, this is not a requirement for project success.
 \subsubsection{Tools} 
 This project will be developed using Eclipse as a development environment. Eclipse allows for easy cross platform integration, allowing the opportunity to work on Mac, Linux and Windows with ease. Eclipse has an advanced set of debugging tools available to be used, which will be of great help if the project comes in to any difficulties.\\ 
@@ -203,11 +205,11 @@ BibTeX will be used to handle references in the \LaTeX{} document. This allows f
 To ensure that no work is lost, Git version control will be used in conjunction with a remote repository hosted privately on Github. Git is useful for several reasons. It is a way of backing up to a remote location, and so will reduce the effects of a large loss of work from a local workstation, as it will be available to access from Github. Being able to use version control is great for development, as new branches allow work to be carried out without affecting the master copy. This will be especially useful in the stages of the project where the face recognition method is being optimised to achieve the best results possible. Git will also be used to store and version control the Project Reports.
 
 \subsection{Work completed to date}
-So far in this project, work has been spent on research and first stages of development. At the beginning of this project, a gantt chart was created Appendix B which shows the breakdown of each task (Work before Christmas holiday B.1, and work after Christmas holiday B.2. No work was planned during the Christmas holidays due to January exams and other coursework) and the time taken to complete them. At this stage of the project, everything up until the Implementation of Fisher Vector Encoding should be completed. However, due to a variety of reasons, this is not the case. The author has found that due to the topic of the project, several stages took far longer than originally planned. The background reading and research  taking longer than planned, this was due to the reading into face recognition, and time was being spent trying to fully understand the methods employed by \cite{simonyan2004fisher}. Approximately 50 hours has been spent in total on Background Research and Background Reading, with larger amount of time being spent on research and into OpenIMAJ, including learning how to use it and research into already available packages. The literature review also took longer than planned, at about 25 hours. To this date, the work completed is up to the Evaluation Methods, with them taking approximately 20 hours, as opposed to the 8 hours. 
+So far in this project, work has been spent on research and first stages of development. At the beginning of this project, a gantt chart was created Appendix C which shows the breakdown of each task (Work before Christmas holiday C.1, and work after Christmas holiday C.2. No work was planned during the Christmas holidays due to January exams and other coursework) and the time taken to complete them. At this stage of the project, everything up until the Implementation of Fisher Vector Encoding should be completed. However, due to a variety of reasons, this is not the case. The author has found that due to the topic of the project, several stages took far longer than originally planned. The background reading and research  taking longer than planned, this was due to the reading into face recognition, and time was being spent trying to fully understand the methods employed by \cite{simonyan2004fisher}. Approximately 50 hours has been spent in total on Background Research and Background Reading, with larger amount of time being spent on research and into OpenIMAJ, including learning how to use it and research into already available packages. The literature review also took longer than planned, at about 25 hours. To this date, the work completed is up to the Evaluation Methods, with them taking approximately 20 hours, as opposed to the 8 hours. 
 
 Within the Gantt Chart, I included other Semester 1 courseworks, this is vital to help with project management, as it allows the project to be looked at from a wider scale of the semester, and if internal deadlines set are likely to be met.
-Whilst these are setbacks, they are setting a better basis for the rest of the project. More time will be allocated over Christmas to make up the time that has been lost. From experience and knowledge learnt from Semester 1, a new Gantt Chart has been created to reflect the work already completed, and the plan of the work to be completed. [Appendix New Gantt Chart - to insert]
-
+Whilst these are setbacks, they are setting a better basis for the rest of the project. More time will be allocated over Christmas to make up the time that has been lost. From experience and knowledge learnt from Semester 1, a new Gantt Chart has been created in Appendix D to reflect the work already completed, and the updated plan of the work to be completed. 
+\newpage
 \section{Plan of remaining work}
 Work has been split into wider sections, the implementation and the evaluation. By creating deadlines for both of these sections, deadlines internal to the sections can be created and utilised. This will give the best opportunity possible for the project to be kept on track and finished within good time.
 For the implementation, the following needs to be completed
@@ -266,10 +268,20 @@ From what has been learnt from the original Gantt Chart, the updated Gantt Chart
     \end{longtable}
 
 \section{Appendix B}
+\subsection{Class Diagram}
+\includegraphics[scale=0.6, angle=0]{images/class.png}
+
+\section{Appendix C}
 \subsection{Preliminary Gantt Chart, work before Christmas}
 \includegraphics[scale=0.4, angle=90]{images/ganntFIRSTprexmas.png}
 \subsection{Preliminary Gantt Chart, work after Christmas}
 \includegraphics[scale=0.4, angle=90]{images/ganntFIRSTpostxmas.png}
+
+\section{Appendix D}
+\subsection{Updated Gantt Chart, work before Christmas}
+\includegraphics[scale=0.3, angle=90]{images/newganttprexmas.png}
+\subsection{Updated Gantt Chart, work after Christmas}
+\includegraphics[scale=0.4, angle=90]{images/newganttpostxmas.png}
 
         \end{appendices}       
        
