@@ -42,10 +42,10 @@
                
                 {\LARGE Face Recognition in the Wild}\\[3.0cm]
                
-                {\Large First Examiner: Dr Paul Lewis}\\[0.5cm]
+                {\Large First Examiner: Dr Jonathan Hare}\\[0.5cm]
                 {\Large Second Examiner: Dr Mark Nixon}\\[3.2cm]
                 {\Large A Project Progress Report \\\ Submitted For The Award Of:}\\[0.2cm]
-                {\Large MEng Computer Science}
+                {\Large BSc Computer Science}
                
                 \vfill
        
@@ -93,8 +93,13 @@ The aim for this project is to investigate and implement the method of Face Reco
 
 \newpage
 \section{Background and report of literature search}
+\subsection{History of Face Recognition}
+
 \subsection{Face Recognition Techniques}
 Face Recognition is the process of verifying or identifying the person in the image inputted. Depending on the type of application, there are many different methods that may be suitable to use. \cite{facesurvey} describes Feature-based and Hollistic approach to face recognition. Feature based works by analysing the image and identifying any features that would be of interest (such as the eyes). They are then extracted, and a dataset is built by calculating the geometric relationship between each point (for example the distance between the eyes and mouth). The data is then analysed to match the faces to the measurements. A Hollistic approach to face recognition involves the identification of faces by basing the descriptions on the entire face, as opposed to local features of the faces. This can be carried out either statistically, or using AI. By using statistical approach, an array of pixel intensity values are created, and direct comparison between each face is carried out. The AI method uses tools such as neural networks and machine learning to learn and recognise the faces.
+\subsubsection{Eigenfaces}
+\subsubsection{Facebook Deepface}
+
 
 \subsection{Fisher Vector Faces in the Wild}
 The paper Fisher Vector faces in the Wild \cite{simonyan2004fisher} shows that when Fisher vectors are used alongside densely sampled SIFT features, the resulting feature based face recognition system is capable of achieving state-of-the-art face verification performance on the Labelled Faces in the Wild \cite{labelledFaces} dataset. The paper proceeds to discover how a compact descriptor can be learnt from the fisher vectors using discriminative metric learning, since fisher vectors are highly dimensional. The conclusion of this paper is supported by a set of tables and graphs, detailing the results of tests on the Labelled faces in the wild dataset. Two methods are used to test the algorithm, the unrestricted setting where outside training data is used, and the restricted setting where no outside training data is used. It shows that when tested under the unrestricted setting, the pipeline has the second highest mean classification accuracy at 0.9303 with a slightly smaller error margin. This is second to High-Dimensionality LBP at 0.9318. In a restricted setting, the method yielded the highest accuracy of 0.8747, meaning it is the new state-of-the-art setting. The paper describes the steps it took in order to achieve it’s results, which uses many advanced facial recognition methods. In this literature review, the methods used will be examined, along with work related to Face Recognition.
@@ -108,19 +113,9 @@ In \cite{simonyan2004fisher}, there is a description of the processing pipeline 
 \item Compact Face Representation
 \end{itemize}
 
-\subsection{OpenIMAJ}
-OpenIMAJ is an Open Intelligent Multimedia Analysis toolkit for Java \cite{openimaj}. It consists of a set of libraries and tools used for multimedia content analysis and content generation. OpenIMAJ already utilises several components needed for the Fisher Vector face recognition implementation. It contains the necessary code for Facial Landmark Detection, Align and Crop,  Dense SIFT, Principal Component Analysis. 
-For Facial Landmark Detection, there is a class in OpenIMAJ that can be used, the FKEFaceDetector (Front Keypoint Enriched Face Detector). There is also the AffineAligner that can be used in order to perform the Align and Crop face. 
 
 \subsection{Dense SIFT}
-Dense SIFT as described in the Fisher Vector Faces in the Wild paper is adapted as the process of extracting distinctive invariant features. It works by performing 4 stages to transform image data into scale-invariant coordinates relative to local features on the face \cite{denseSift}.
-\begin{enumerate}
-\item Scale-space extreme detection. This searches all scales and image locations to identify points that may be of interest that are invariant to scale and orientation. This is a preliminary step to find out which points would be suitable for feature matching.
-\item Keypoint localisation. At the points found from step 1, their location and scale is determined.
-\item Orientation assignment. In order to provide invariance to the transformations about to happen in 4., one or more orientations are assigned to each keypoint location based on the local image gradient directions. Any future operations will be performed on image data relative to the assigned orientation, scale and location for each feature.
-\item Keypoint descriptor. By measuring the local image gradients at the selected scale in the region around the keypoint, they can be transformed to allow for significant levels of local shape distortion and change in illumination. This allows us to determine the image features.
-\end{enumerate}
-With the above steps completed, the image features are extracted from the set of reference images and stored in a database ready for further processing. SIFT points are extremely useful due to being highly distinctive. These features are also known as descriptors.
+
 
 \subsection{Fisher Vector Encoding}
 Fisher Vectors describe a set of local features in a single vector. Fisher Vector encoding is the process of combining a large set of vectors into a high dimensional vector representation. By applying a Gaussian Mixture Model (GMM) on the vector elements, the derivatives of the log-likelihood of the model can be encoded with respect to it’s parameters. By using the set of local features from Dense SIFT, a highly dimensional Fisher vector can be created. The GMM is seen as a face model, and if plotted on the image, the mean and variance of GMM’s are represented by ellipses of all the features. A representation can be created between the features and the GMM centres by training a GMM with diagonal covariances, then calculate the derivatives with respect to the Gaussian mean and variances. A more detailed explanation is available in \cite{simonyan2004fisher}, showing the functions used to create the vectors.
@@ -136,6 +131,11 @@ The Labelled Faces in the Wild Dataset is a database of images collected for the
 The way that this dataset works is by using the pre-defined views (sets of images, some positively matching and others negatively matching). The first is for algorithm development, and the second is for performance reporting. Using these two different views helps ensure that the algorithm will not be skewed for the final results.
 
 For example, given the following two images of Jon Stewart (Figure 1) and  Paul McCartney (Figure 2), the algorithm should correctly classify these as not being the same person. 
+
+\subsection{OpenIMAJ}
+OpenIMAJ is an Open Intelligent Multimedia Analysis toolkit for Java \cite{openimaj}. It consists of a set of libraries and tools used for multimedia content analysis and content generation. OpenIMAJ already utilises several components needed for the Fisher Vector face recognition implementation. It contains the necessary code for Facial Landmark Detection, Align and Crop,  Dense SIFT, Principal Component Analysis. 
+For Facial Landmark Detection, there is a class in OpenIMAJ that can be used, the FKEFaceDetector (Front Keypoint Enriched Face Detector). There is also the AffineAligner that can be used in order to perform the Align and Crop face. 
+
 
 \begin{figure}[H]
 \minipage{0.45\textwidth}
@@ -161,9 +161,9 @@ Whereas, given these two images of Mark Wahlberg (Figure 3 and Figure 4), the al
 \end{figure}
 
 \newpage
-\section{Report on Technical Progress}
-\subsection{Analysis}
-\subsubsection{Requirements}
+%\section{Analysis}
+\section{Analysis}
+\subsection{Requirements}
 A requirements specification has been created for an implementation of an algorithm, using research discussed in section 2. Functional Requirements describe what the project will do. Non-functional requirements explain how the project will do so. \\
 
 \textbf{Functional Requirements}
@@ -181,11 +181,11 @@ A requirements specification has been created for an implementation of an algori
 \item Use existing classes in OpenIMAJ where possible. OpenIMAJ has many classes ready to be used, the implementation of this project will be in such a way that if there is an already existing method, it will be tested to ensure it’s effectiveness, and used.
 \item Create each step of the pipeline individually, so they can be used standalone in the future. Such to the nature of OpenIMAJ, by ensuring that each algorithm used is implemented in it’s own class, it will be able to be used in other OpenIMAJ projects, not just this one. 
 \end{itemize}
-\subsubsection{Risks}
+\subsection{Risks}
 The table in Appendix A.1 Table 1 outlines the possible problems that would affect the project. Each problem has a an explanation, along with how much it would impact the project (in terms of the amount of time needed to overcome the problem). Along with that, a risk factor is given, determining how much of a risk the problem would be. As you can see, the highest risk is a hardware failure on the development machine, or data corruption. For each risk, a contingency plan has been created, detailing what would happen in each eventuality. A contingency plan has been created, as shown in Appendix A.2 Table 2. A contingency plan is very useful, as it will not only help overcome any problems in the project if they happen, but will help prevent those problems in the first place. 
 
-\subsection{Design}
-\subsubsection{Proposed Final Design}
+\section{Design \& Implementation}
+\subsection{Final Design}
 This project has been split down into several sections in order to help structure the implementation of it. Each section is as follows:
 \begin{itemize}
 \item Evaluation Methods
@@ -200,41 +200,21 @@ This project has been split down into several sections in order to help structur
 The way that the implementations have been planned allow a clear design structure to be concluded. Each implementation will be created as an individual class or set of classes. This will result in a highly cohesive project, helping with project management. In the long term it will encourage the reuse of code in other OpenIMAJ projects. The evaluation methods have been created first in order to allow for testing to take place throughout the project. Appendix B.1 shows a class diagram, showing outlines for the design of the pipeline, using pre-existing classes (e.g. AffineAligner), and new classes that will be created (e.g. FVEncode).
 
 The project will run from command line to output the results for the evaluation. If time allows, this project may create a Graphical User Interface to run the evaluation tools, however, this is not a requirement for project success.
-\subsubsection{Tools} 
+\subsection{Tools} 
 This project will be developed using Eclipse as a development environment. Eclipse allows for easy cross platform integration, allowing the opportunity to work on Mac, Linux and Windows with ease. Eclipse has an advanced set of debugging tools available to be used, which will be of great help if the project comes in to any difficulties.\\ 
 Whilst OpenIMAJ is going to be adapted in this project, it is also going to be used in development. OpenIMAJ contains several tools needed for implementing the face recognition method, and they will be tested to ensure suitability and used accordingly. \\
 \LaTeX{} will be used to create and present the Project Brief, Progress Report and the Final Report. \LaTeX{} is a document preparation and typesetting program to output a report. This will give the project more flexibilty over the content of the reports, and allows the author present a professional report each time. To write the \LaTeX{}, the program TexMaker will be used. This program is a productive way to write \LaTeX{}, with a built in compiler, it outputs the document in the same window, allowing for fast writing and formatting.\\
 BibTeX will be used to handle references in the \LaTeX{} document. This allows for fast and easy referencing in the reports. A separate .bib file is created in a text editor and populated with the references in the BibTeX format. They can then be easily used in the \LaTeX{} document.\\
 To ensure that no work is lost, Git version control will be used in conjunction with a remote repository hosted privately on Github. Git is useful for several reasons. It is a way of backing up to a remote location, and so will reduce the effects of a large loss of work from a local workstation, as it will be available to access from Github. Being able to use version control is great for development, as new branches allow work to be carried out without affecting a master copy. This will be especially useful in the stages of the project where the face recognition method is being optimised to achieve the best results possible. Git will also be used to store and version control the Project Reports.
 
-\subsection{Work completed to date}
-So far in this project, work has been spent on research and the first stages of development. At the beginning of this project, a gantt chart was created Appendix C which shows the breakdown of each task (Work before Christmas holiday C.1, and work after Christmas holiday C.2. No work was planned during the Christmas holidays due to January exams and other coursework) and the time taken to complete them. At this stage of the project, everything up until the Implementation of Fisher Vector Encoding should be completed. However, due to a variety of reasons, this is not the case. The author has found that due to the topic of the project, several stages took far longer than originally planned. The background reading and research  taking longer than planned, this was due to the reading into face recognition, and time was being spent trying to fully understand the methods employed by \cite{simonyan2004fisher}. Approximately 50 hours has been spent in total on Background Research and Background Reading, with larger amount of time being spent on research and into OpenIMAJ, including learning how to use it and research into already available packages. The literature review also took longer than planned, at about 25 hours. To this date, the work completed is up to the Evaluation Methods, with them taking approximately 20 hours, as opposed to the 8 hours. 
+\section{Testing}
+\subsection{Strategy}
+\subsection{Results}
 
-Within the Gantt Chart, I included other Semester 1 courseworks, this is vital to help with project management, as it allows the project to be looked at from a wider scale of the semester, and if internal deadlines set are likely to be met.
-Whilst these are setbacks, a better basis has been set for the rest of the project. More time will be allocated over Christmas to make up the time that has been lost. From experience and knowledge learnt from Semester 1, a new Gantt Chart has been created in Appendix D to reflect the work already completed, and the updated plan of the work to be completed. 
-\newpage
-\section{Plan of remaining work}
-Work has been split into wider sections, the implementation and the evaluation. By creating deadlines for both of these sections, deadlines internal to the sections can be created and utilised. This will give the best opportunity possible for the project to be kept on track and finished within good time.
-For the implementation, the following needs to be completed
-\begin{itemize}
-\item Dense SIFT 
-\item Gaussian Mixture Model 
-\item Fisher Vector Encoding 
-\item Discriminative Dimensionality Reduction 
-\item Compact Face Representation 
-\item Pipeline implementation
-\item Testing
-\end{itemize}
+\section{Conclusions}
 
-Some of this work will be completed over the Christmas holidays, although time needs to be considered for the author’s 4 January exams and January coursework deadline. 
-For the evaluation, the following needs to be completed 
-\begin{itemize}
-\item Evaluation using the Labelled Faces in the Wild dataset
-\item Evaluation of other methods using LFW
-\item Comparison of different methods and datasets
-\item Final Report
-\end{itemize}
-From what has been learnt from the original Gantt Chart, the updated Gantt Chart reflects the work to be completed. The project aims to be completed towards the end of March (18th-25th March), with further work to be carried out on the Final Report up until the deadline. A deadline of the 14th April has been set in advance of the course deadline to ensure the project is completed in good time.
+\section{Further Work}
+
 %%%%%%%%%%%%%%%%%%%%%%%%%
 %       APPENDICES      %
 %%%%%%%%%%%%%%%%%%%%%%%%%
