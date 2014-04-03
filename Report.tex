@@ -98,8 +98,8 @@ The aim for this project is to investigate and implement the method of Face Reco
 \subsection{Face Recognition Techniques}
 Face Recognition is the process of verifying or identifying the person in the image inputted. Depending on the type of application, there are many different methods that may be suitable to use. \cite{facesurvey} describes Feature-based and Hollistic approach to face recognition. Feature based works by analysing the image and identifying any features that would be of interest (such as the eyes). They are then extracted, and a dataset is built by calculating the geometric relationship between each point (for example the distance between the eyes and mouth). The data is then analysed to match the faces to the measurements. A Hollistic approach to face recognition involves the identification of faces by basing the descriptions on the entire face, as opposed to local features of the faces. This can be carried out either statistically, or using AI. By using statistical approach, an array of pixel intensity values are created, and direct comparison between each face is carried out. The AI method uses tools such as neural networks and machine learning to learn and recognise the faces.
 \subsubsection{Eigenfaces}
-Eigenfaces is the method of representing an image as a set of eigenvectors. First used for face classification by Turk and Pentland [reference paper],  they show that Eigenfaces are a practical solution to the problem of face recognition. Eigenfaces works by creating low dimensional feature vectors by applying Principal Component Analysis to feature vectors of the image. A classifier can then be trained to test and use the system. Turk and Pentland originally used KNN Classification, however any classification can be used. 
-\subsubsection{Facebook Deepface}
+Eigenfaces is a popular method of face representation, developed in the late 1980's by Sivroch and Kirby [reference LowDim procedure for characterization of human faces] it works by representing an image as a set of eigenvectors. The use of Eigenfaces for face classification began in the early 1990's by Turk and Pentland [reference paper], showing that Eigenfaces are a practical solution to the problem of face recognition. Eigenfaces works by training a classifier based on low dimensional vectors. These vectors are created from a set of training images, where the mean vector is computed and used to mean centre all vectors. PCA is then applied to all vectors using the transform matrix (an eigenvector matrix - stored for later use), and the resulting low dimensional vectors are used to train the classifier (originall, Turk and Pentland used a KNN Classifier). Given a face to be recognised, the image vector is mean centred using previous mean vector, and PCA is applied using the previous transform matrix. The vector is then passed to the classifier, generating a resultant class of the image.
+\subsubsection{Deepface}
 Deepface is the current state of the art method for Face Recognition on the Labelled Faces in the Wild Dataset, at 97.25\% accuracy, it is very close to the Human level recognition of 97.53\% [reference humanlfw stuff]. Deepface has created an improved facial alignment system through 3D analysis. Then by using a deep neural net, a face representation can be created that is generic across different datasets.
 
 \subsection{Fisher Vector Faces in the Wild}
@@ -114,13 +114,13 @@ In \cite{simonyan2004fisher}, there is a description of the processing pipeline 
 \end{itemize}
 
 
-\subsection{Dense SIFT}
+\subsubsection{Dense SIFT}
 
 
-\subsection{Fisher Vector Encoding}
+\subsubsection{Fisher Vector Encoding}
 Fisher Vectors describe a set of local features in a single vector. Fisher Vector encoding is the process of combining a large set of vectors into a high dimensional vector representation. By applying a Gaussian Mixture Model (GMM) on the vector elements, the derivatives of the log-likelihood of the model can be encoded with respect to it’s parameters. By using the set of local features from Dense SIFT, a highly dimensional Fisher vector can be created. The GMM is seen as a face model, and if plotted on the image, the mean and variance of GMM’s are represented by ellipses of all the features. A representation can be created between the features and the GMM centres by training a GMM with diagonal covariances, then calculate the derivatives with respect to the Gaussian mean and variances. A more detailed explanation is available in \cite{simonyan2004fisher}, showing the functions used to create the vectors.
 
-\subsection{Large-Margin Dimensionality Reduction}
+\subsubsection{Large-Margin Dimensionality Reduction}
 
 Large-Margin Dimensionality Reduction is the step in which the Fisher Vectors are compressed to small discriminative representation. This stage is where the calculation is made that determines if the two given faces are the same or not. \cite{simonyan2004fisher} details the method, explaining how a high dimensional fisher vector can be projected to a low dimensional vector, in order for the squared euclidian distance can be calculated. If the squared euclidian distance between the two images are smaller than a threshold, then they are the same person in the image.
         
@@ -131,11 +131,6 @@ The Labelled Faces in the Wild Dataset is a database of images collected for the
 The way that this dataset works is by using the pre-defined views (sets of images, some positively matching and others negatively matching). The first is for algorithm development, and the second is for performance reporting. Using these two different views helps ensure that the algorithm will not be skewed for the final results.
 
 For example, given the following two images of Jon Stewart (Figure 1) and  Paul McCartney (Figure 2), the algorithm should correctly classify these as not being the same person. 
-
-\subsection{OpenIMAJ}
-OpenIMAJ is an Open Intelligent Multimedia Analysis toolkit for Java \cite{openimaj}. It consists of a set of libraries and tools used for multimedia content analysis and content generation. OpenIMAJ already utilises several components needed for the Fisher Vector face recognition implementation. It contains the necessary code for Facial Landmark Detection, Align and Crop,  Dense SIFT, Principal Component Analysis. 
-For Facial Landmark Detection, there is a class in OpenIMAJ that can be used, the FKEFaceDetector (Front Keypoint Enriched Face Detector). There is also the AffineAligner that can be used in order to perform the Align and Crop face. 
-
 
 \begin{figure}[H]
 \minipage{0.45\textwidth}
@@ -165,7 +160,6 @@ OpenIMAJ is an Open Intelligent Multimedia Analysis toolkit for Java \cite{openi
 For Facial Landmark Detection, there is a class in OpenIMAJ that can be used, the FKEFaceDetector (Front Keypoint Enriched Face Detector). There is also the AffineAligner that can be used in order to perform the Align and Crop face. 
 
 \newpage
-%\section{Analysis}
 \section{Analysis}
 \subsection{Requirements}
 A requirements specification has been created for an implementation of an algorithm, using research discussed in section 2. Functional Requirements describe what the project will do. Non-functional requirements explain how the project will do so. \\
@@ -188,7 +182,7 @@ A requirements specification has been created for an implementation of an algori
 \subsection{Risks}
 The table in Appendix A.1 Table 1 outlines the possible problems that would affect the project. Each problem has a an explanation, along with how much it would impact the project (in terms of the amount of time needed to overcome the problem). Along with that, a risk factor is given, determining how much of a risk the problem would be. As you can see, the highest risk is a hardware failure on the development machine, or data corruption. For each risk, a contingency plan has been created, detailing what would happen in each eventuality. A contingency plan has been created, as shown in Appendix A.2 Table 2. A contingency plan is very useful, as it will not only help overcome any problems in the project if they happen, but will help prevent those problems in the first place. 
 
-\section{Design \& Implementation}
+\section{Design}
 \subsection{Final Design}
 This project has been split down into several sections in order to help structure the implementation of it. Each section is as follows:
 \begin{itemize}
@@ -204,7 +198,8 @@ This project has been split down into several sections in order to help structur
 The way that the implementations have been planned allow a clear design structure to be concluded. Each implementation will be created as an individual class or set of classes. This will result in a highly cohesive project, helping with project management. In the long term it will encourage the reuse of code in other OpenIMAJ projects. The evaluation methods have been created first in order to allow for testing to take place throughout the project. Appendix B.1 shows a class diagram, showing outlines for the design of the pipeline, using pre-existing classes (e.g. AffineAligner), and new classes that will be created (e.g. FVEncode).
 
 The project will run from command line to output the results for the evaluation. If time allows, this project may create a Graphical User Interface to run the evaluation tools, however, this is not a requirement for project success.
-\subsection{Tools} 
+\section{ Implementation}
+\subsection{Tools Used} 
 This project will be developed using Eclipse as a development environment. Eclipse allows for easy cross platform integration, allowing the opportunity to work on Mac, Linux and Windows with ease. Eclipse has an advanced set of debugging tools available to be used, which will be of great help if the project comes in to any difficulties.\\ 
 Whilst OpenIMAJ is going to be adapted in this project, it is also going to be used in development. OpenIMAJ contains several tools needed for implementing the face recognition method, and they will be tested to ensure suitability and used accordingly. \\
 \LaTeX{} will be used to create and present the Project Brief, Progress Report and the Final Report. \LaTeX{} is a document preparation and typesetting program to output a report. This will give the project more flexibilty over the content of the reports, and allows the author present a professional report each time. To write the \LaTeX{}, the program TexMaker will be used. This program is a productive way to write \LaTeX{}, with a built in compiler, it outputs the document in the same window, allowing for fast writing and formatting.\\
@@ -213,8 +208,12 @@ To ensure that no work is lost, Git version control will be used in conjunction 
 
 \section{Testing}
 \subsection{Strategy}
+\subsubsection{Unit Testing}
 \subsection{Results}
 
+\section{Evaluation}
+\subsection{Evaluation Methodology}
+\subsection{Critical Evaluation}
 \section{Conclusions}
 
 \section{Further Work}
